@@ -4,6 +4,7 @@
 typedef struct{
     char Nombre[50];
     char Localidad[30];
+    int Edad;
     int Genero;
     int Interes;
 } PersonaEntrada;
@@ -25,7 +26,6 @@ int FuncionSubPrincipal(int N,int NumPersonas){
         Array_Random[i]=0; // Inicializa
     }
     srand((unsigned int)time(NULL));
-    printf("%d\n",RAND_MAX);
     for(int i=N; i!=0;--i){
         NumeroRandom = rand() % (NumPersonas+1);
         while(Array_Random[NumeroRandom]!=0){
@@ -53,8 +53,8 @@ int main (){
     Entrada =fopen("personas.txt","r");
     Lineas = CantidadDeLineas(Entrada);
     fclose(Entrada);
-    while (Cantidad>Lineas){
-        printf("Por favor ingrese una cantidad menor a %d: ",Lineas);
+    while ((Cantidad>Lineas)|(Cantidad<0)){
+        printf("Por favor ingrese una cantidad menor a %d y mayor a 0: ",Lineas);
         scanf("%d",&Cantidad);
     }
     FuncionSubPrincipal(Cantidad,Lineas);
