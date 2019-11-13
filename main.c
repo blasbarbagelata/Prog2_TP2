@@ -3,11 +3,12 @@
 #include <time.h>
 typedef struct{
     char Nombre[50];
+    char Apellido[50];
     char Localidad[30];
     int Edad;
     int Genero;
     int Interes;
-} PersonaEntrada;
+} Persona;
 int CantidadDeLineas(FILE *Archivo){
     long Lineas = 0;
     char caracter;
@@ -20,7 +21,52 @@ int CantidadDeLineas(FILE *Archivo){
     }
     return Lineas;
 }
-int FuncionSubPrincipal(int N,int NumPersonas){
+char CrearArreglo(FILE *Archivo,int Tamano){
+    char *P,basura[50];
+    char Localidades[Tamano];
+    for (int i=0; i < Tamano;++i){
+        P = malloc(sizeof(char)*30);
+        fscanf(Archivo,"%s[,]",basura);
+        fscanf(Archivo,"%s[\n]",P);
+        Localidades[i] = *P;
+
+    }
+    return Localidades[Tamano]; 
+}
+int funcionlectura(int arreglin[], int CantPersonas){
+    FILE *Archibopersonas,*archibolocalidades;
+    char caracter;
+    int n=1,Codigo,Sexo,Sexualidad,tamano,Edad;
+    char  Genero[2]={"M","F"},Interes[4]={"F","M","A","N"};
+    Persona Personas[CantPersonas];
+    Persona *Personas = (Persona*)malloc(sizeof(Persona)*CantPersonas);  
+    Archibopersonas =fopen("personas.txt","r");
+    archibolocalidades =fopen("codigoLocalidades.txt","r");
+    tamano = CantidadDeLineas(archibolocalidades);
+    char ArregloLocalidades[tamano] = CrearArreglo(archibolocalidades,tamano);
+    fclose(archibolocalidades);
+    caracter=fgetc(Archibopersonas);
+    for(int i=0; i< CantPersonas; ++i){
+        while(n<arreglin[i]){
+            if(caracter == '\n'){
+                ++n;
+            }
+            caracter=fgetc(Archibopersonas);
+        }
+        fscanf(Archibopersonas,"%s[,]",Personas[i].Nombre);
+        fscanf(Archibopersonas,"%s[,]",Personas[i].Apellido);
+        fscanf(Archibopersonas,"%d[,]",&Codigo);
+        Personas[i].Localidad=ArregloLocalidades[Codigo-1];
+        fscanf(Archibopersonas,"%d[,]",&Edad);
+        Personas[i].Edad=Edad;
+        fscanf(Archibopersonas,"%d[,]",&Sexo);
+        Personas[i].Genero=Genero[Sexo-1];
+        fscanf(Archibopersonas,"%d[,]",&Sexualidad);
+        Personas[i].Interes=Interes[Sexualidad-1];
+    }
+}
+
+void FuncionSubPrincipal(int N,int NumPersonas){
     int Array_Index[N], NumeroRandom, Array_Random[NumPersonas];
     for(int i=0;i<NumPersonas;++i){
         Array_Random[i]=0; // Inicializa
@@ -43,7 +89,7 @@ int FuncionSubPrincipal(int N,int NumPersonas){
     for(int i=0;i<N;++i){
         printf("%d\n",Array_Index[i]);
     }
-    return 0;
+    funcionlectura(Array_Index,N);
 }
 int main (){
     int Cantidad=0,Lineas=0;
@@ -53,7 +99,7 @@ int main (){
     Entrada =fopen("personas.txt","r");
     Lineas = CantidadDeLineas(Entrada);
     fclose(Entrada);
-    while ((Cantidad>Lineas)|(Cantidad<0)){
+    while ((Cantidad>Lineas)&&(Cantidad<0)){
         printf("Por favor ingrese una cantidad menor a %d y mayor a 0: ",Lineas);
         scanf("%d",&Cantidad);
     }
