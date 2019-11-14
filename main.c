@@ -2,14 +2,6 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-/*typedef struct{
-    char Nombre[50];
-    char Apellido[50];
-    char Localidad[60];
-    int Edad;
-    char Genero;
-    char Interes;
-} Persona;*/
 int CantidadDeLineas(FILE *Archivo){
     long Lineas = 0;
     char caracter;
@@ -44,7 +36,6 @@ void funcionlectura(int CantPersonas, int arrayRandom[]){
     char buffer[100],Genero[2]={'M','F'},Interes[4]={'F','M','A','N'};
     char Nombre[50],Apellido[50];
     int linea=1,Codigo,Sexo,Sexualidad,Edad,tamano;
-    //Persona *Personas = (Persona*)malloc(sizeof(Persona)*CantPersonas);
     archibolocalidades =fopen("codigoLocalidades.txt","r");
     tamano = CantidadDeLineas(archibolocalidades);
     char *ArregloLocalidades[tamano];
@@ -60,14 +51,13 @@ void funcionlectura(int CantPersonas, int arrayRandom[]){
         }
         fscanf(Archibopersonas,"%[^,],%[^,],",Nombre,Apellido);
         fscanf(Archibopersonas,"%d,",&Codigo);
-        //strcpy(Personas[i].Localidad,ArregloLocalidades[Codigo-1]);
         fscanf(Archibopersonas,"%d,",&Edad);
         fscanf(Archibopersonas,"%d,",&Sexo);
-        //Personas[i].Genero=Genero[Sexo-1];
         fscanf(Archibopersonas,"%d",&Sexualidad);
-        //Personas[i].Interes=Interes[Sexualidad-1];
         fprintf(ArchivoSalida,"%s, %s, %s, %d, %c, %c\n",Nombre,Apellido,ArregloLocalidades[Codigo-1],Edad,Genero[Sexo-1],Interes[Sexualidad-1]);
     }
+    fclose(Archibopersonas);
+    fclose(ArchivoSalida);
 }
 void FuncionSubPrincipal(int CantPersonas,int TotalPersonas){
     int *Array_Index=(int*)malloc(sizeof(int)*CantPersonas);
@@ -106,6 +96,5 @@ int main (){
         scanf("%d",&Cantidad);
     }
     FuncionSubPrincipal(Cantidad,Lineas);
-
     return 0;
 }
