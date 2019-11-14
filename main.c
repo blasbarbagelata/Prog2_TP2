@@ -20,7 +20,7 @@ int CantidadDeLineas(FILE *Archivo){
         }
         caracter= fgetc(Archivo);
     }
-    return Lineas;
+    return Lineas+1;
 }
 void Normalizar(char array[]){
     int i=0;
@@ -29,7 +29,7 @@ void Normalizar(char array[]){
     }
     array[i]='\0';
 }
-void CrearArreglo(FILE *Archivo,int Tamano,char *Localidades[]){
+void CrearArregloLocalidades(FILE *Archivo,int Tamano,char *Localidades[]){
     char basura[50], buffer[100];
     for (int i=0; i < Tamano;++i){
         fscanf(Archivo,"%[^,],",basura);
@@ -39,21 +39,20 @@ void CrearArreglo(FILE *Archivo,int Tamano,char *Localidades[]){
         strcpy(Localidades[i], buffer);
     }
 }
-
-
-int funcionlectura(int arrayRandom[], int CantPersonas){
-    FILE *Archibopersonas,*archibolocalidades;
+void funcionlectura(int CantPersonas, int arrayRandom[]){
+    FILE *Archibopersonas,*archibolocalidades,*ArchivoSalida;
     char buffer[100],Genero[2]={'M','F'},Interes[4]={'F','M','A','N'};
-    int linea=1,Codigo,Sexo,Sexualidad,tamano,Edad;
+    int linea=1,Codigo,Sexo,Sexualidad,tamano;
     Persona *Personas = (Persona*)malloc(sizeof(Persona)*CantPersonas);
     archibolocalidades =fopen("codigoLocalidades.txt","r");
     tamano = CantidadDeLineas(archibolocalidades);
     char *ArregloLocalidades[tamano];
     rewind(archibolocalidades);
-    CrearArreglo(archibolocalidades,tamano,ArregloLocalidades);
+    CrearArregloLocalidades(archibolocalidades,tamano,ArregloLocalidades);
     fclose(archibolocalidades);
     Archibopersonas =fopen("personas.txt","r");
-    for(int i=0; i< CantPersonas; ++i){
+    ArchivoSalida =fopen("ArchivoSalida.txt","w");
+    for(int i=0; i< CantPersonas-1; i++){
         while(linea<arrayRandom[i]){
             fgets(buffer,100,Archibopersonas);
             linea++;
@@ -61,38 +60,37 @@ int funcionlectura(int arrayRandom[], int CantPersonas){
         fscanf(Archibopersonas,"%[^,],%[^,],",Personas[i].Nombre,Personas[i].Apellido);
         fscanf(Archibopersonas,"%d,",&Codigo);
         strcpy(Personas[i].Localidad,ArregloLocalidades[Codigo-1]);
-        fscanf(Archibopersonas,"%d,",&Edad);
-        Personas[i].Edad=Edad;
+        fscanf(Archibopersonas,"%d,",&Personas[i].Edad);
         fscanf(Archibopersonas,"%d,",&Sexo);
         Personas[i].Genero=Genero[Sexo-1];
-        fscanf(Archibopersonas,"%d\n",&Sexualidad);
+        fscanf(Archibopersonas,"%d",&Sexualidad);
         Personas[i].Interes=Interes[Sexualidad-1];
-        printf("%s, %s, %s, %d, %c, %c\n",Personas[i].Nombre,Personas[i].Apellido,Personas[i].Localidad,Personas[i].Edad,Personas[i].Genero,Personas[i].Interes);
+        fprintf(ArchivoSalida,"%s, %s, %s, %d, %c, %c\n",Personas[i].Nombre,Personas[i].Apellido,Personas[i].Localidad,Personas[i].Edad,Personas[i].Genero,Personas[i].Interes);
     }
-    return 0;
 }
-
-void FuncionSubPrincipal(int N,int NumPersonas){
-    int Array_Index[N], NumeroRandom, Array_Random[NumPersonas];
-    for(int i=0;i<NumPersonas;++i){
+void FuncionSubPrincipal(int CantPersonas,int TotalPersonas){
+    int *Array_Index=(int*)malloc(sizeof(int)*CantPersonas);
+    int *Array_Random=(int*)malloc(sizeof(int)*TotalPersonas);
+    int NumeroRandom;
+    for(int i=0;i<TotalPersonas;++i){
         Array_Random[i]=0; // Inicializa
     }
     srand((unsigned int)time(NULL));
-    for(int i=N; i!=0;--i){
-        NumeroRandom = rand() % (NumPersonas+1);
+    for(int i=CantPersonas; i!=0;--i){
+        NumeroRandom = rand() % (TotalPersonas+1);
         while(Array_Random[NumeroRandom]!=0){
-            NumeroRandom = rand() % (NumPersonas+1);
+            NumeroRandom = rand() % (TotalPersonas+1);
         }
         Array_Random[NumeroRandom]=-1;
     }
-    int n=0;
-    for(int i=0;i<NumPersonas;++i){
+    int idx=0;
+    for(int i=0;i<TotalPersonas;++i){
         if(Array_Random[i]==-1){
-            Array_Index[n]=i;
-            n++;
+            Array_Index[idx]=i;
+            idx++;
         }
     }
-    funcionlectura(Array_Index,N);
+    funcionlectura(CantPersonas,Array_Index);
 }
 int main (){
     int Cantidad=0,Lineas=0;
