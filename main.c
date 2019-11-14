@@ -2,14 +2,14 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-typedef struct{
+/*typedef struct{
     char Nombre[50];
     char Apellido[50];
     char Localidad[60];
     int Edad;
     char Genero;
     char Interes;
-} Persona;
+} Persona;*/
 int CantidadDeLineas(FILE *Archivo){
     long Lineas = 0;
     char caracter;
@@ -42,8 +42,9 @@ void CrearArregloLocalidades(FILE *Archivo,int Tamano,char *Localidades[]){
 void funcionlectura(int CantPersonas, int arrayRandom[]){
     FILE *Archibopersonas,*archibolocalidades,*ArchivoSalida;
     char buffer[100],Genero[2]={'M','F'},Interes[4]={'F','M','A','N'};
-    int linea=1,Codigo,Sexo,Sexualidad,tamano;
-    Persona *Personas = (Persona*)malloc(sizeof(Persona)*CantPersonas);
+    char Nombre[50],Apellido[50];
+    int linea=1,Codigo,Sexo,Sexualidad,Edad,tamano;
+    //Persona *Personas = (Persona*)malloc(sizeof(Persona)*CantPersonas);
     archibolocalidades =fopen("codigoLocalidades.txt","r");
     tamano = CantidadDeLineas(archibolocalidades);
     char *ArregloLocalidades[tamano];
@@ -52,20 +53,20 @@ void funcionlectura(int CantPersonas, int arrayRandom[]){
     fclose(archibolocalidades);
     Archibopersonas =fopen("personas.txt","r");
     ArchivoSalida =fopen("ArchivoSalida.txt","w");
-    for(int i=0; i< CantPersonas-1; i++){
+    for(int i=0; i< CantPersonas; i++){
         while(linea<arrayRandom[i]){
             fgets(buffer,100,Archibopersonas);
             linea++;
         }
-        fscanf(Archibopersonas,"%[^,],%[^,],",Personas[i].Nombre,Personas[i].Apellido);
+        fscanf(Archibopersonas,"%[^,],%[^,],",Nombre,Apellido);
         fscanf(Archibopersonas,"%d,",&Codigo);
-        strcpy(Personas[i].Localidad,ArregloLocalidades[Codigo-1]);
-        fscanf(Archibopersonas,"%d,",&Personas[i].Edad);
+        //strcpy(Personas[i].Localidad,ArregloLocalidades[Codigo-1]);
+        fscanf(Archibopersonas,"%d,",&Edad);
         fscanf(Archibopersonas,"%d,",&Sexo);
-        Personas[i].Genero=Genero[Sexo-1];
+        //Personas[i].Genero=Genero[Sexo-1];
         fscanf(Archibopersonas,"%d",&Sexualidad);
-        Personas[i].Interes=Interes[Sexualidad-1];
-        fprintf(ArchivoSalida,"%s, %s, %s, %d, %c, %c\n",Personas[i].Nombre,Personas[i].Apellido,Personas[i].Localidad,Personas[i].Edad,Personas[i].Genero,Personas[i].Interes);
+        //Personas[i].Interes=Interes[Sexualidad-1];
+        fprintf(ArchivoSalida,"%s, %s, %s, %d, %c, %c\n",Nombre,Apellido,ArregloLocalidades[Codigo-1],Edad,Genero[Sexo-1],Interes[Sexualidad-1]);
     }
 }
 void FuncionSubPrincipal(int CantPersonas,int TotalPersonas){
