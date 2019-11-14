@@ -7,8 +7,8 @@ typedef struct{
     char Apellido[50];
     char Localidad[60];
     int Edad;
-    int Genero;
-    int Interes;
+    char Genero;
+    char Interes;
 } Persona;
 int CantidadDeLineas(FILE *Archivo){
     long Lineas = 0;
@@ -32,10 +32,8 @@ void Normalizar(char array[]){
 void CrearArreglo(FILE *Archivo,int Tamano,char *Localidades[]){
     char basura[50], buffer[100];
     for (int i=0; i < Tamano;++i){
-        fscanf(Archivo,"%[^,]",basura);
-        fgetc(Archivo);
-        fscanf(Archivo,"%[^\n]",buffer);
-        fgetc(Archivo);
+        fscanf(Archivo,"%[^,],",basura);
+        fscanf(Archivo,"%[^\n]\n",buffer);
         Normalizar(buffer);
         Localidades[i] = malloc(sizeof(char)*60);
         strcpy(Localidades[i], buffer);
@@ -43,45 +41,34 @@ void CrearArreglo(FILE *Archivo,int Tamano,char *Localidades[]){
 }
 
 
-int funcionlectura(int arreglin[], int CantPersonas){
+int funcionlectura(int arrayRandom[], int CantPersonas){
     FILE *Archibopersonas,*archibolocalidades;
-    char buffer[100];
-    int n=1,Codigo,Sexo,Sexualidad,tamano,Edad;
-    char  Genero[2]={'M','F'},Interes[4]={'F','M','A','N'};
+    char buffer[100],Genero[2]={'M','F'},Interes[4]={'F','M','A','N'};
+    int linea=1,Codigo,Sexo,Sexualidad,tamano,Edad;
     Persona *Personas = (Persona*)malloc(sizeof(Persona)*CantPersonas);
-    Archibopersonas =fopen("personas.txt","r");
     archibolocalidades =fopen("codigoLocalidades.txt","r");
     tamano = CantidadDeLineas(archibolocalidades);
-    rewind(archibolocalidades);
     char *ArregloLocalidades[tamano];
+    rewind(archibolocalidades);
     CrearArreglo(archibolocalidades,tamano,ArregloLocalidades);
     fclose(archibolocalidades);
+    Archibopersonas =fopen("personas.txt","r");
     for(int i=0; i< CantPersonas; ++i){
-        while(n<arreglin[i]){
+        while(linea<arrayRandom[i]){
             fgets(buffer,100,Archibopersonas);
-            n++;
+            linea++;
         }
-        fscanf(Archibopersonas,"%[^,]",Personas[i].Nombre);
-        fgetc(Archibopersonas);
-        fscanf(Archibopersonas,"%[^,]",Personas[i].Apellido);
-        fgetc(Archibopersonas);
-        fscanf(Archibopersonas,"%d",&Codigo);
+        fscanf(Archibopersonas,"%[^,],%[^,],",Personas[i].Nombre,Personas[i].Apellido);
+        fscanf(Archibopersonas,"%d,",&Codigo);
         strcpy(Personas[i].Localidad,ArregloLocalidades[Codigo-1]);
-        fgetc(Archibopersonas);
-        fscanf(Archibopersonas,"%d",&Edad);
+        fscanf(Archibopersonas,"%d,",&Edad);
         Personas[i].Edad=Edad;
-        fgetc(Archibopersonas);
-        fscanf(Archibopersonas,"%d",&Sexo);
+        fscanf(Archibopersonas,"%d,",&Sexo);
         Personas[i].Genero=Genero[Sexo-1];
-        fgetc(Archibopersonas);
-        fscanf(Archibopersonas,"%d",&Sexualidad);
+        fscanf(Archibopersonas,"%d\n",&Sexualidad);
         Personas[i].Interes=Interes[Sexualidad-1];
+        printf("%s, %s, %s, %d, %c, %c\n",Personas[i].Nombre,Personas[i].Apellido,Personas[i].Localidad,Personas[i].Edad,Personas[i].Genero,Personas[i].Interes);
     }
-
-    for(int i=0; i< CantPersonas; ++i){
-      printf("%s, %s, %s, %d, %c, %c\n",Personas[i].Nombre,Personas[i].Apellido,Personas[i].Localidad,Personas[i].Edad,Personas[i].Genero,Personas[i].Interes);
-    }
-
     return 0;
 }
 
