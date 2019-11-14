@@ -23,7 +23,11 @@ int CantidadDeLineas(FILE *Archivo){
     return Lineas;
 }
 void Normalizar(char array[]){
-
+    int i=0;
+    while(array[i]!=' '||array[i+1]!=' '){
+      i++;
+    }
+    array[i]='\0';
 }
 void CrearArreglo(FILE *Archivo,int Tamano,char *Localidades[]){
     char basura[50], buffer[100];
@@ -41,7 +45,7 @@ void CrearArreglo(FILE *Archivo,int Tamano,char *Localidades[]){
 
 int funcionlectura(int arreglin[], int CantPersonas){
     FILE *Archibopersonas,*archibolocalidades;
-    char caracter;
+    char buffer[100];
     int n=1,Codigo,Sexo,Sexualidad,tamano,Edad;
     char  Genero[2]={'M','F'},Interes[4]={'F','M','A','N'};
     Persona *Personas = (Persona*)malloc(sizeof(Persona)*CantPersonas);
@@ -52,13 +56,10 @@ int funcionlectura(int arreglin[], int CantPersonas){
     char *ArregloLocalidades[tamano];
     CrearArreglo(archibolocalidades,tamano,ArregloLocalidades);
     fclose(archibolocalidades);
-    caracter=fgetc(Archibopersonas);
     for(int i=0; i< CantPersonas; ++i){
         while(n<arreglin[i]){
-            if(caracter == '\n'){
-                ++n;
-            }
-            caracter=fgetc(Archibopersonas);
+            fgets(buffer,100,Archibopersonas);
+            n++;
         }
         fscanf(Archibopersonas,"%[^,]",Personas[i].Nombre);
         fgetc(Archibopersonas);
@@ -103,9 +104,6 @@ void FuncionSubPrincipal(int N,int NumPersonas){
             Array_Index[n]=i;
             n++;
         }
-    }
-    for(int i=0;i<N;++i){
-        printf("%d\n",Array_Index[i]);
     }
     funcionlectura(Array_Index,N);
 }
