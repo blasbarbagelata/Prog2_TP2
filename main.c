@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 typedef struct{
     char Nombre[50];
     char Apellido[50];
-    char Localidad[30];
+    char Localidad[60];
     int Edad;
     int Genero;
     int Interes;
@@ -21,29 +22,35 @@ int CantidadDeLineas(FILE *Archivo){
     }
     return Lineas;
 }
-char CrearArreglo(FILE *Archivo,int Tamano){
-    char *P,basura[50];
-    char Localidades[Tamano];
-    for (int i=0; i < Tamano;++i){
-        P = malloc(sizeof(char)*30);
-        fscanf(Archivo,"%s[,]",basura);
-        fscanf(Archivo,"%s[\n]",P);
-        Localidades[i] = *P;
+void Normalizar(char array[]){
 
-    }
-    return Localidades[Tamano]; 
 }
+void CrearArreglo(FILE *Archivo,int Tamano,char *Localidades[]){
+    char basura[50], buffer[100];
+    for (int i=0; i < Tamano;++i){
+        fscanf(Archivo,"%[^,]",basura);
+        fgetc(Archivo);
+        fscanf(Archivo,"%[^\n]",buffer);
+        fgetc(Archivo);
+        Normalizar(buffer);
+        Localidades[i] = malloc(sizeof(char)*60);
+        strcpy(Localidades[i], buffer);
+    }
+}
+
+
 int funcionlectura(int arreglin[], int CantPersonas){
     FILE *Archibopersonas,*archibolocalidades;
     char caracter;
     int n=1,Codigo,Sexo,Sexualidad,tamano,Edad;
-    char  Genero[2]={"M","F"},Interes[4]={"F","M","A","N"};
-    Persona Personas[CantPersonas];
-    Persona *Personas = (Persona*)malloc(sizeof(Persona)*CantPersonas);  
+    char  Genero[2]={'M','F'},Interes[4]={'F','M','A','N'};
+    Persona *Personas = (Persona*)malloc(sizeof(Persona)*CantPersonas);
     Archibopersonas =fopen("personas.txt","r");
     archibolocalidades =fopen("codigoLocalidades.txt","r");
     tamano = CantidadDeLineas(archibolocalidades);
-    char ArregloLocalidades[tamano] = CrearArreglo(archibolocalidades,tamano);
+    rewind(archibolocalidades);
+    char *ArregloLocalidades[tamano];
+    CrearArreglo(archibolocalidades,tamano,ArregloLocalidades);
     fclose(archibolocalidades);
     caracter=fgetc(Archibopersonas);
     for(int i=0; i< CantPersonas; ++i){
@@ -53,17 +60,28 @@ int funcionlectura(int arreglin[], int CantPersonas){
             }
             caracter=fgetc(Archibopersonas);
         }
-        fscanf(Archibopersonas,"%s[,]",Personas[i].Nombre);
-        fscanf(Archibopersonas,"%s[,]",Personas[i].Apellido);
-        fscanf(Archibopersonas,"%d[,]",&Codigo);
-        Personas[i].Localidad=ArregloLocalidades[Codigo-1];
-        fscanf(Archibopersonas,"%d[,]",&Edad);
+        fscanf(Archibopersonas,"%[^,]",Personas[i].Nombre);
+        fgetc(Archibopersonas);
+        fscanf(Archibopersonas,"%[^,]",Personas[i].Apellido);
+        fgetc(Archibopersonas);
+        fscanf(Archibopersonas,"%d",&Codigo);
+        strcpy(Personas[i].Localidad,ArregloLocalidades[Codigo-1]);
+        fgetc(Archibopersonas);
+        fscanf(Archibopersonas,"%d",&Edad);
         Personas[i].Edad=Edad;
-        fscanf(Archibopersonas,"%d[,]",&Sexo);
+        fgetc(Archibopersonas);
+        fscanf(Archibopersonas,"%d",&Sexo);
         Personas[i].Genero=Genero[Sexo-1];
-        fscanf(Archibopersonas,"%d[,]",&Sexualidad);
+        fgetc(Archibopersonas);
+        fscanf(Archibopersonas,"%d",&Sexualidad);
         Personas[i].Interes=Interes[Sexualidad-1];
     }
+
+    for(int i=0; i< CantPersonas; ++i){
+      printf("%s, %s, %s, %d, %c, %c\n",Personas[i].Nombre,Personas[i].Apellido,Personas[i].Localidad,Personas[i].Edad,Personas[i].Genero,Personas[i].Interes);
+    }
+
+    return 0;
 }
 
 void FuncionSubPrincipal(int N,int NumPersonas){
