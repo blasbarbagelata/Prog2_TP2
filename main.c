@@ -2,8 +2,9 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-/*CantidadDeLineas: File -> Int
-recibe un archivo, lee caracter por caracter, contando los saltos de linea.
+
+/*CantidadDeLineas: File* -> Int
+Recibe un archivo, lee caracter por caracter, contando los saltos de linea.
 devuelve la cantidad de lineas que tenga ese archivo en forma de entero*/
 int CantidadDeLineas(FILE *Archivo){
     int Lineas = 0;
@@ -17,27 +18,26 @@ int CantidadDeLineas(FILE *Archivo){
     }
     return Lineas;
 }
+
 /* Normalizar: char[], int
-recibe una cadena de caracteres y su largo,
+Recibe una cadena de caracteres y su largo,
 devuelve la misma cadena sin espacios de mas*/
-void Normalizar(char array[],int largo){
+void Normalizar(char array[]){
     int i=0;
     while (array[i]!='\0'){
       i++;
     }
-    printf("%d--",i);
     while(array[i]!=' '){
       i--;
     }
-    printf("%d--",i);
     while(array[i]==' '){
       i--;
     }
-    printf("%d\n",i);
     array[i+1]='\0';
-    }
+}
+
 /* CrearArregloLocalidades: FILE* , int , char**
-recibe un archivo de localidades, la cantidad de lineas del archivo
+Recibe un archivo de localidades, la cantidad de lineas del archivo
 y un arreglo de punteros char y le asigna a cada puntero char una localidad
 del archivo, la cual esta en una posicion que representa su codigo-1 en el archivo*/
 void CrearArregloLocalidades(FILE *Archivo,int Tamano,char *Localidades[]){
@@ -46,18 +46,19 @@ void CrearArregloLocalidades(FILE *Archivo,int Tamano,char *Localidades[]){
     for (int i=0; i < Tamano;++i){
         fscanf(Archivo,"%[^,],",basura);
         fscanf(Archivo,"%[^\n]",buffer);
-        Normalizar(buffer,largo);
+        Normalizar(buffer);
         Localidades[i] = malloc(sizeof(char)*60);
         strcpy(Localidades[i], buffer);
     }
 }
-/*funcionlectura: int, int[]
-recibe la cantidad de personas solicitadas por teclado (N)
+
+/*Lectura_Escritura: int, int[]
+Recibe la cantidad de personas solicitadas por teclado (N)
 y un arreglo de N numeros arrayRandom.
 crea un archivo en el cual escribe la cantidad de personas solicitadas, elegidas
 de forma aleatoria del siguiente modo:
-Nombre, Apellido, localidad, edad, genero, interes*/
-void funcionlectura(int CantPersonas, int arrayRandom[]){
+Nombre, Apellido, Localidad, Edad, Genero, Interes */
+void Lectura_Escritura(int CantPersonas, int arrayRandom[]){
     FILE *Archivopersonas,*Archivolocalidades,*ArchivoSalida;
     char buffer[100],Genero[2]={'M','F'},Interes[4]={'F','M','A','N'};
     char Nombre[50],Apellido[50];
@@ -81,6 +82,7 @@ void funcionlectura(int CantPersonas, int arrayRandom[]){
     fclose(Archivopersonas);
     fclose(ArchivoSalida);
 }
+
 /* CrearArregloRandom: int, int
 recibe la cantidad(N) de personas solicitadas y la cantidad total de personas
 que hay en el archivo.
@@ -107,12 +109,13 @@ void CrearArregloRandom(int CantPersonas,int TotalPersonas){
             idx++;
         }
     }
-    funcionlectura(CantPersonas,Array_Index);
+    Lectura_Escritura(CantPersonas,Array_Index);
 }
-int main (){
+
+int main(){
     int Cantidad=0,Lineas=0;
     FILE *Entrada;
-    Entrada =fopen("personas.txt","r");
+    Entrada = fopen("personas.txt","r");
     Lineas = CantidadDeLineas(Entrada);
     fclose(Entrada);
     printf("Ingrese la cantidad de personas: ");
