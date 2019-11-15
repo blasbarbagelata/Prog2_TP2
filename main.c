@@ -2,8 +2,11 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
+/*CantidadDeLineas: File -> Int
+recibe un archivo, lee caracter por caracter, contando los saltos de linea.
+devuelve la cantidad de lineas que tenga ese archivo en forma de entero*/
 int CantidadDeLineas(FILE *Archivo){
-    long Lineas = 0;
+    int Lineas = 0;
     char caracter;
     caracter= fgetc(Archivo);
     while(caracter!=EOF){
@@ -14,23 +17,37 @@ int CantidadDeLineas(FILE *Archivo){
     }
     return Lineas;
 }
-void Normalizar(char array[]){
+/* Normalizar: char[], int
+recibe una cadena de caracteres y su largo,
+devuelve la misma cadena sin espacios de mas*/
+void Normalizar(char array[],int largo){
     int i=0;
-    while(array[i]!=' '||array[i+1]!=' '){
+    while (array[i]!=' '||array[i+1]!=' '){
       i++;
     }
-    array[i]='\0';
-}
+    array[i]='\0' ;
+    }
+/* CrearArregloLocalidades: FILE* , int , char**
+recibe un archivo de localidades, la cantidad de lineas del archivo
+y un arreglo de punteros char y le asigna a cada puntero char una localidad
+del archivo, la cual esta en una posicion que representa su codigo-1 en el archivo*/
 void CrearArregloLocalidades(FILE *Archivo,int Tamano,char *Localidades[]){
-    char basura[50], buffer[100];
+    int largo=100;
+    char basura[10], buffer[largo];
     for (int i=0; i < Tamano;++i){
         fscanf(Archivo,"%[^,],",basura);
         fscanf(Archivo,"%[^\n]",buffer);
-        Normalizar(buffer);
+        Normalizar(buffer,largo);
         Localidades[i] = malloc(sizeof(char)*60);
         strcpy(Localidades[i], buffer);
     }
 }
+/*funcionlectura: int, int[]
+recibe la cantidad de personas solicitadas por teclado (N)
+y un arreglo de N numeros arrayRandom.
+crea un archivo en el cual escribe la cantidad de personas solicitadas, elegidas
+de forma aleatoria del siguiente modo:
+Nombre, Apellido, localidad, edad, genero, interes*/
 void funcionlectura(int CantPersonas, int arrayRandom[]){
     FILE *Archivopersonas,*Archivolocalidades,*ArchivoSalida;
     char buffer[100],Genero[2]={'M','F'},Interes[4]={'F','M','A','N'};
@@ -55,12 +72,16 @@ void funcionlectura(int CantPersonas, int arrayRandom[]){
     fclose(Archivopersonas);
     fclose(ArchivoSalida);
 }
-void FuncionSubPrincipal(int CantPersonas,int TotalPersonas){
+/* CrearArregloRandom: int, int
+recibe la cantidad(N) de personas solicitadas y la cantidad total de personas
+que hay en el archivo.
+Crea un arreglo con N numeros random de 0 a TotalPersonas sin repetir */
+void CrearArregloRandom(int CantPersonas,int TotalPersonas){
     int *Array_Index=(int*)malloc(sizeof(int)*CantPersonas);
     int *Array_Random=(int*)malloc(sizeof(int)*TotalPersonas);
     int NumeroRandom;
     for(int i=0;i<TotalPersonas;++i){
-        Array_Random[i]=0; // Inicializa
+        Array_Random[i]=0;
     }
     srand((unsigned int)time(NULL));
     for(int i=CantPersonas; i!=0;--i){
@@ -91,6 +112,6 @@ int main (){
         printf("Por favor ingrese una cantidad menor a %d y mayor a 0: ",Lineas);
         scanf("%d",&Cantidad);
     }
-    FuncionSubPrincipal(Cantidad,Lineas);
+    CrearArregloRandom(Cantidad,Lineas);
     return 0;
 }
