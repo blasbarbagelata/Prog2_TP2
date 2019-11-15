@@ -22,10 +22,19 @@ recibe una cadena de caracteres y su largo,
 devuelve la misma cadena sin espacios de mas*/
 void Normalizar(char array[],int largo){
     int i=0;
-    while (array[i]!=' '||array[i+1]!=' '){
+    while (array[i]!='\0'){
       i++;
     }
-    array[i]='\0' ;
+    printf("%d--",i);
+    while(array[i]!=' '){
+      i--;
+    }
+    printf("%d--",i);
+    while(array[i]==' '){
+      i--;
+    }
+    printf("%d\n",i);
+    array[i+1]='\0';
     }
 /* CrearArregloLocalidades: FILE* , int , char**
 recibe un archivo de localidades, la cantidad de lineas del archivo
