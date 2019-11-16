@@ -2,10 +2,9 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-
+/*Diseño de datos:*/
 /*CantidadDeLineas: File* -> Int
-Recibe un archivo, lee caracter por caracter, contando los saltos de linea.
-devuelve la cantidad de lineas que tenga ese archivo en forma de entero*/
+Recibe un archivo, devuelve la cantidad de lineas que posee el archivo*/
 int CantidadDeLineas(FILE *Archivo){
     int Lineas = 0;
     char caracter;
@@ -19,9 +18,9 @@ int CantidadDeLineas(FILE *Archivo){
     return Lineas;
 }
 
-/* Normalizar: char[], int
-Recibe una cadena de caracteres y su largo,
-devuelve la misma cadena sin espacios de mas*/
+/* Normalizar: char[]
+Recibe una cadena de caracteres,
+modifica la cadena para que quede sin espacios de mas*/
 void Normalizar(char array[]){
     int i=0;
     while (array[i]!='\0'){
@@ -38,9 +37,10 @@ void Normalizar(char array[]){
 
 /* CrearArregloLocalidades: FILE* , int , char**
 Recibe un archivo de localidades, la cantidad de lineas del archivo
-y un arreglo de punteros char y le asigna a cada puntero char una localidad
-del archivo, la cual esta en una posicion que representa su codigo-1 en el archivo*/
-void CrearArregloLocalidades(FILE *Archivo,int Tamano,char *Localidades[]){
+y un arreglo de punteros char. 
+Le asigna a cada puntero char una localidad del archivo, 
+la posicion en el arreglo representa el codigo-1 de la localidad*/
+void CrearArrayLocalidades(FILE *Archivo,int Tamano,char *Localidades[]){
     int largo=100;
     char basura[10], buffer[largo];
     for (int i=0; i < Tamano;++i){
@@ -54,9 +54,9 @@ void CrearArregloLocalidades(FILE *Archivo,int Tamano,char *Localidades[]){
 
 /*Lectura_Escritura: int, int[]
 Recibe la cantidad de personas solicitadas por teclado (N)
-y un arreglo de N numeros arrayRandom.
-crea un archivo en el cual escribe la cantidad de personas solicitadas, elegidas
-de forma aleatoria del siguiente modo:
+y un arreglo de N numeros aleatorios.
+Escribe sobre un archivo los datos de las personas que se encuentran en las lineas 
+correspondientes a los numeros aleatorios del arreglo del siguiente modo:
 Nombre, Apellido, Localidad, Edad, Genero, Interes */
 void Lectura_Escritura(int CantPersonas, int arrayRandom[]){
     FILE *Archivopersonas,*Archivolocalidades,*ArchivoSalida;
@@ -65,9 +65,9 @@ void Lectura_Escritura(int CantPersonas, int arrayRandom[]){
     int Linea=0,Codigo,Sexo,Sexualidad,Edad,tamano;
     Archivolocalidades =fopen("codigoLocalidades.txt","r");
     tamano = CantidadDeLineas(Archivolocalidades);
-    char *ArregloLocalidades[tamano];
+    char *ArrayLocalidades[tamano];
     rewind(Archivolocalidades);
-    CrearArregloLocalidades(Archivolocalidades,tamano,ArregloLocalidades);
+    CrearArrayLocalidades(Archivolocalidades,tamano,ArrayLocalidades);
     fclose(Archivolocalidades);
     Archivopersonas =fopen("personas.txt","r");
     ArchivoSalida =fopen("ArchivoSalida.txt","w");
@@ -77,17 +77,16 @@ void Lectura_Escritura(int CantPersonas, int arrayRandom[]){
             Linea++;
         }
         fscanf(Archivopersonas,"%[^,],%[^,],%d,%d,%d,%d",Nombre,Apellido,&Codigo,&Edad,&Sexo,&Sexualidad);
-        fprintf(ArchivoSalida,"%s, %s, %s, %d, %c, %c\n",Nombre,Apellido,ArregloLocalidades[Codigo-1],Edad,Genero[Sexo-1],Interes[Sexualidad-1]);
+        fprintf(ArchivoSalida,"%s, %s, %s, %d, %c, %c\n",Nombre,Apellido,ArrayLocalidades[Codigo-1],Edad,Genero[Sexo-1],Interes[Sexualidad-1]);
     }
     fclose(Archivopersonas);
     fclose(ArchivoSalida);
 }
 
-/* CrearArregloRandom: int, int
-recibe la cantidad(N) de personas solicitadas y la cantidad total de personas
-que hay en el archivo.
-Crea un arreglo con N numeros random de 0 a TotalPersonas sin repetir */
-void CrearArregloRandom(int CantPersonas,int TotalPersonas){
+/* CrearArrayRandom: int, int
+Recibe la cantidad(N) de personas solicitadas y la cantidad de personas en el archivo.
+Crea un arreglo con N numeros aleatorios de 0 a TotalPersonas-1 sin repetir */
+void CrearArrayRandom(int CantPersonas,int TotalPersonas){
     int *Array_Index=(int*)malloc(sizeof(int)*CantPersonas);
     int *Array_Random=(int*)malloc(sizeof(int)*TotalPersonas);
     int NumeroRandom;
@@ -124,6 +123,6 @@ int main(){
         printf("Por favor ingrese una cantidad menor a %d y mayor a 0: ",Lineas);
         scanf("%d",&Cantidad);
     }
-    CrearArregloRandom(Cantidad,Lineas);
+    CrearArrayRandom(Cantidad,Lineas);
     return 0;
 }
