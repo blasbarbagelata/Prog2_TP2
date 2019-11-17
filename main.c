@@ -52,14 +52,22 @@ y un arreglo de punteros char.
 Le asigna a cada puntero char una localidad del archivo, 
 la posicion en el arreglo representa el codigo-1 de la localidad*/
 void CrearArrayLocalidades(FILE *Archivo,int Tamano,char *Localidades[]){
-    int largo=100;
-    char basura[10], buffer[largo];
+    char basura[10], buffer[100];
     for (int i=0; i < Tamano;++i){
         fscanf(Archivo,"%[^,],",basura);
         fscanf(Archivo,"%[^\n]",buffer);
         Normalizar(buffer);
-        Localidades[i] = malloc(sizeof(char)*60);
+        Localidades[i] = malloc(sizeof(char)*strlen(buffer));
         strcpy(Localidades[i], buffer);
+    }
+}
+
+/*LiberarMemoria: char**, int
+Recibe un arreglo de punteros char y su tamaño,
+libera los espacios de memoria de cada puntero en el arreglo*/
+void LiberarMemoria(char *Array[],int Largo){
+    for(int i=0; i<Largo;++i){
+        free(Array[i]);
     }
 }
 
@@ -92,6 +100,7 @@ void Lectura_Escritura(int CantPersonas, int arrayRandom[]){
     }
     fclose(ArchivoPersonas);
     fclose(ArchivoSalida);
+    LiberarMemoria(ArrayLocalidades,Tamano);
 }
 
 /* CrearArrayRandom: int, int
