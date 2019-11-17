@@ -101,6 +101,8 @@ void Lectura_Escritura(int CantPersonas, int arrayRandom[]){
     fclose(ArchivoPersonas);
     fclose(ArchivoSalida);
     LiberarMemoria(ArrayLocalidades,Tamano);
+    free(ArrayLocalidades);
+    free(arrayRandom);
 }
 
 /* CrearArrayRandom: int, int
@@ -129,6 +131,7 @@ void CrearArrayRandom(int CantPersonas,int TotalPersonas){
         }
     }
     Lectura_Escritura(CantPersonas,Array_Random);
+    free(Array_Index);
 }
 
 int main(){
