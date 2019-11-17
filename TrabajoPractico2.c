@@ -108,9 +108,8 @@ void Lectura_Escritura(int CantPersonas, int arrayRandom[]){
 /* CrearArrayRandom: int, int
 Recibe la cantidad(N) de personas solicitadas y la cantidad de personas en el archivo.
 Crea un arreglo con N numeros aleatorios de 0 a TotalPersonas-1 sin repetir */
-void CrearArrayRandom(int CantPersonas,int TotalPersonas){
+void CrearArrayRandom(int Array_Random[],int CantPersonas,int TotalPersonas){
     int *Array_Index=(int*)malloc(sizeof(int)*TotalPersonas);
-    int *Array_Random=(int*)malloc(sizeof(int)*CantPersonas);
     int NumeroRandom;
     for(int i=0;i<TotalPersonas;++i){
         Array_Index[i]=0;
@@ -130,7 +129,6 @@ void CrearArrayRandom(int CantPersonas,int TotalPersonas){
             idx++;
         }
     }
-    Lectura_Escritura(CantPersonas,Array_Random);
     free(Array_Index);
 }
 
@@ -146,6 +144,8 @@ int main(){
         printf("Por favor ingrese una cantidad menor a %d y mayor a 0: ",Lineas);
         scanf("%d",&Cantidad);
     }
-    CrearArrayRandom(Cantidad,Lineas);
+    int *ArrayRandom=(int*)malloc(sizeof(int)*Cantidad);
+    CrearArrayRandom(ArrayRandom,Cantidad,Lineas);
+    Lectura_Escritura(Cantidad,ArrayRandom);
     return 0;
 }
