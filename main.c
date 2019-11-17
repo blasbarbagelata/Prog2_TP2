@@ -2,7 +2,18 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-/*Diseño de datos:*/
+/*El programa comienza solicitando que se ingrese por teclado una cantidad de personas (N), continua pidiendo hasta
+que la cantidad de personas ingresadas sea mayor a 0 y menor o igual al total de personas en el archivo de entrada.
+
+Luego, genera N numeros aleatorios sin repeir que representaran el numero de la linea de la persona a leer,
+ y luego escribir en el archivo de salida, y los almacena en un arreglo.
+
+Despues, arma un arreglo de strings con las localidades del archivo codigoLocalidades donde la posicion 
+en la que se almacenan representa el codigo-1 de la respectiva localidad.
+
+Finalmente, comienza a leer las personas que correspenden segun el numero aleatorio, almacena sus
+datos en variables temporales y luego los escribe en el archivo de salida como corresponde.*/
+
 /*CantidadDeLineas: File* -> Int
 Recibe un archivo, devuelve la cantidad de lineas que posee el archivo*/
 int CantidadDeLineas(FILE *Archivo){
@@ -35,7 +46,7 @@ void Normalizar(char array[]){
     array[i+1]='\0';
 }
 
-/* CrearArregloLocalidades: FILE* , int , char**
+/* CrearArrayLocalidades: FILE* , int , char**
 Recibe un archivo de localidades, la cantidad de lineas del archivo
 y un arreglo de punteros char. 
 Le asigna a cada puntero char una localidad del archivo, 
