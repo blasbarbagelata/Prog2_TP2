@@ -84,7 +84,7 @@ void Lectura_Escritura(int CantPersonas, int arrayRandom[]){
     int Linea=0,Codigo,Sexo,Sexualidad,Edad,Tamano;
     ArchivoLocalidades =fopen("codigoLocalidades.txt","r");
     Tamano = CantidadDeLineas(ArchivoLocalidades);
-    char *ArrayLocalidades[Tamano];
+    char **ArrayLocalidades=(char**)malloc(sizeof(char*)*Tamano);
     rewind(ArchivoLocalidades);
     CrearArrayLocalidades(ArchivoLocalidades,Tamano,ArrayLocalidades);
     fclose(ArchivoLocalidades);
@@ -107,28 +107,28 @@ void Lectura_Escritura(int CantPersonas, int arrayRandom[]){
 Recibe la cantidad(N) de personas solicitadas y la cantidad de personas en el archivo.
 Crea un arreglo con N numeros aleatorios de 0 a TotalPersonas-1 sin repetir */
 void CrearArrayRandom(int CantPersonas,int TotalPersonas){
-    int *Array_Index=(int*)malloc(sizeof(int)*CantPersonas);
-    int *Array_Random=(int*)malloc(sizeof(int)*TotalPersonas);
+    int *Array_Index=(int*)malloc(sizeof(int)*TotalPersonas);
+    int *Array_Random=(int*)malloc(sizeof(int)*CantPersonas);
     int NumeroRandom;
     for(int i=0;i<TotalPersonas;++i){
-        Array_Random[i]=0;
+        Array_Index[i]=0;
     }
     srand((unsigned int)time(NULL));
     for(int i=CantPersonas; i>0;--i){
         NumeroRandom = rand() % (TotalPersonas);
-        while(Array_Random[NumeroRandom]!=0){
+        while(Array_Index[NumeroRandom]!=0){
             NumeroRandom = rand() % (TotalPersonas);
         }
-        Array_Random[NumeroRandom]=-1;
+        Array_Index[NumeroRandom]=-1;
     }
     int idx=0;
     for(int i=0;i<TotalPersonas;++i){
-        if(Array_Random[i]==-1){
-            Array_Index[idx]=i;
+        if(Array_Index[i]==-1){
+            Array_Random[idx]=i;
             idx++;
         }
     }
-    Lectura_Escritura(CantPersonas,Array_Index);
+    Lectura_Escritura(CantPersonas,Array_Random);
 }
 
 int main(){
