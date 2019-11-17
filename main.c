@@ -70,27 +70,27 @@ Escribe sobre un archivo los datos de las personas que se encuentran en las line
 correspondientes a los numeros aleatorios del arreglo del siguiente modo:
 Nombre, Apellido, Localidad, Edad, Genero, Interes */
 void Lectura_Escritura(int CantPersonas, int arrayRandom[]){
-    FILE *Archivopersonas,*Archivolocalidades,*ArchivoSalida;
+    FILE *ArchivoPersonas,*ArchivoLocalidades,*ArchivoSalida;
     char buffer[100],Genero[2]={'M','F'},Interes[4]={'F','M','A','N'};
     char Nombre[50],Apellido[50];
-    int Linea=0,Codigo,Sexo,Sexualidad,Edad,tamano;
-    Archivolocalidades =fopen("codigoLocalidades.txt","r");
-    tamano = CantidadDeLineas(Archivolocalidades);
-    char *ArrayLocalidades[tamano];
-    rewind(Archivolocalidades);
-    CrearArrayLocalidades(Archivolocalidades,tamano,ArrayLocalidades);
-    fclose(Archivolocalidades);
-    Archivopersonas =fopen("personas.txt","r");
+    int Linea=0,Codigo,Sexo,Sexualidad,Edad,Tamano;
+    ArchivoLocalidades =fopen("codigoLocalidades.txt","r");
+    Tamano = CantidadDeLineas(ArchivoLocalidades);
+    char *ArrayLocalidades[Tamano];
+    rewind(ArchivoLocalidades);
+    CrearArrayLocalidades(ArchivoLocalidades,Tamano,ArrayLocalidades);
+    fclose(ArchivoLocalidades);
+    ArchivoPersonas =fopen("personas.txt","r");
     ArchivoSalida =fopen("ArchivoSalida.txt","w");
     for(int i=0; i< CantPersonas; i++){
         while(Linea<arrayRandom[i]){
-            fgets(buffer,100,Archivopersonas);
+            fgets(buffer,100,ArchivoPersonas);
             Linea++;
         }
-        fscanf(Archivopersonas,"%[^,],%[^,],%d,%d,%d,%d",Nombre,Apellido,&Codigo,&Edad,&Sexo,&Sexualidad);
+        fscanf(ArchivoPersonas,"%[^,],%[^,],%d,%d,%d,%d",Nombre,Apellido,&Codigo,&Edad,&Sexo,&Sexualidad);
         fprintf(ArchivoSalida,"%s, %s, %s, %d, %c, %c\n",Nombre,Apellido,ArrayLocalidades[Codigo-1],Edad,Genero[Sexo-1],Interes[Sexualidad-1]);
     }
-    fclose(Archivopersonas);
+    fclose(ArchivoPersonas);
     fclose(ArchivoSalida);
 }
 
@@ -105,7 +105,7 @@ void CrearArrayRandom(int CantPersonas,int TotalPersonas){
         Array_Random[i]=0;
     }
     srand((unsigned int)time(NULL));
-    for(int i=CantPersonas; i!=0;--i){
+    for(int i=CantPersonas; i>0;--i){
         NumeroRandom = rand() % (TotalPersonas);
         while(Array_Random[NumeroRandom]!=0){
             NumeroRandom = rand() % (TotalPersonas);
@@ -124,10 +124,10 @@ void CrearArrayRandom(int CantPersonas,int TotalPersonas){
 
 int main(){
     int Cantidad=0,Lineas=0;
-    FILE *Entrada;
-    Entrada = fopen("personas.txt","r");
-    Lineas = CantidadDeLineas(Entrada);
-    fclose(Entrada);
+    FILE *fEntrada;
+    fEntrada = fopen("personas.txt","r");
+    Lineas = CantidadDeLineas(fEntrada);
+    fclose(fEntrada);
     printf("Ingrese la cantidad de personas: ");
     scanf("%d",&Cantidad);
     while ((Cantidad>Lineas)||(Cantidad<0)){
