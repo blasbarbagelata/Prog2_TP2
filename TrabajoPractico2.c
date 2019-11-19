@@ -57,7 +57,7 @@ void CrearArrayLocalidades(FILE *Archivo,int Tamano,char *Localidades[]){
         fscanf(Archivo,"%[^,],",basura);
         fscanf(Archivo,"%[^\n]",buffer);
         Normalizar(buffer);
-        Localidades[i] = malloc(sizeof(char)*strlen(buffer));
+        Localidades[i] = malloc(sizeof(char)*strlen(buffer)+1);
         strcpy(Localidades[i], buffer);
     }
 }
